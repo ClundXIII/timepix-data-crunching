@@ -8,16 +8,27 @@ namespace PDC {
 class pixelhit {
 public:
 
-    pixelhit(std::string line);
+    pixelhit(unsigned int matIdx, unsigned int ToA,
+            unsigned int ToT, unsigned int FToA);
 
-    const unsigned int idx;
-    const unsigned int matIdx;
-    const unsigned int matX;
-    const unsigned int matY;
-    const unsigned int ToA;
-    const unsigned int ToT;
-    const unsigned int FToA;
-    const bool overflow;
+    pixelhit(unsigned int idx, unsigned int matIdx, unsigned int ToA,
+            unsigned int ToT, unsigned int FToA, bool overflow);
+
+    pixelhit(unsigned int idx, int matX, int matY, unsigned int ToA,
+            unsigned int ToT, unsigned int FToA, bool overflow);
+
+    pixelhit(unsigned int idx, unsigned int matIdx, int matX, int matY, unsigned int ToA,
+            unsigned int ToT, unsigned int FToA, bool overflow);
+
+    const unsigned int idx = 0;
+    const unsigned int matIdx = 0;
+    const unsigned int ToA = 0;
+    const unsigned int ToT = 0;
+    const unsigned int FToA = 0;
+    const bool overflow = 0;
+
+    const unsigned int matX = 0;
+    const unsigned int matY = 0;
 
     ~pixelhit();
 };

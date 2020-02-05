@@ -2,6 +2,9 @@
 #define PDC_include_hh_included
 
 #include "classes/pixelhit.hh"
+#include "classes/structs.hh"
+#include "util/split.hh"
+#include "tasks.hh"
 
 namespace PDC {
 

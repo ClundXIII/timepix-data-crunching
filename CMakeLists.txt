@@ -1,4 +1,4 @@
-project(pixet-data-calibration)
+project(timepix-data-crunching)
 cmake_minimum_required(VERSION 2.8)
 
 # put binary output in bin/ subdirectory
@@ -40,6 +40,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage")
 
 set(HEADERS
     ${PROJECT_SOURCE_DIR}/src/include.hh
+    ${PROJECT_SOURCE_DIR}/src/util/split.hh
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.hh
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
@@ -52,5 +53,5 @@ set(SOURCES
 )
 
 # add object files to be compiled
-add_executable(pixet-data-calibration ${SOURCES})
-target_link_libraries(pixet-data-calibration "stdc++fs")# "c++experimental")
+add_executable(timepix-data-crunching ${SOURCES})
+target_link_libraries(timepix-data-crunching "stdc++fs")# "c++experimental")
