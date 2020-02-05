@@ -18,10 +18,10 @@ struct colMapping {
 };
 
 struct calibrationParameter {
-    double a=2;
-    double b=15;
-    double c=20;
-    double t=2;
+    double a =  2;
+    double b = 15;
+    double c = 20;
+    double t =  2;
 };
 
 struct gaussParameter { // ampl * exp( (x-mean)^2 / (2*sigma^2)) + a*x + t
@@ -33,7 +33,7 @@ struct gaussParameter { // ampl * exp( (x-mean)^2 / (2*sigma^2)) + a*x + t
 };
 
 struct calibrationInputFile {
-    std::ifstream file;
+    std::ifstream *file;
     std::vector<double> energies;
 };
 

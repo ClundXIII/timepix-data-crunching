@@ -49,6 +49,7 @@ set(HEADERS
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/calibrate_tpx3.cpp
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
 

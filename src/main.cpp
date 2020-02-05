@@ -29,7 +29,7 @@ enum detectorType {
 };
 
 map<string, detectorType> detectorNameMap = {
-        { "tpx3", TPX3 }
+    { "tpx3", TPX3 }
 };
 
 } /* namespace PDC */
@@ -41,6 +41,8 @@ int main(int argc, char* argv[]) {
     colMapping thisColMapping;
     detectorType thisDetectorType = TPX3;
     bool forceOverwrite = false;
+    vector<calibrationInputFile> calibrationInputFiles;
+    string outputDirectory;
 
     bool fail = false;
 
@@ -96,9 +98,24 @@ int main(int argc, char* argv[]) {
             case 'f':
                 forceOverwrite = true;
                 break;
-            case 'e':
+            case 'i': {
+                argPos++;
+                calibrationInputFile tmpCfg;
+                tmpCfg.file = new ifstream(argv[argPos]);
+                argPos++;
+
+                auto energyStrs = split(argv[argPos], ',');
+
+                for (auto const& s : energyStrs) {
+                    tmpCfg.energies.push_back(std::stod(s));
+                }
+
+                calibrationInputFiles.push_back(tmpCfg);
                 break;
+            }
             case 'o':
+                argPos ++;
+                outputDirectory = argv[argPos];
                 break;
             default:
                 cout << "unexpected flag in argument number " << argPos << endl;
@@ -116,9 +133,12 @@ int main(int argc, char* argv[]) {
     }
 
     switch (todo) {
-    case CALIBRATE:
+    case CALIBRATE:{
         cout << "doing calibration" << endl;
+        int retVal = calibrate_tpx3(thisColMapping, calibrationInputFiles, outputDirectory);
+        cout << "finished with status " << retVal << endl;
         break;
+    }
     case APPLY_CALIBRATION:
         cout << "applying calibration" << endl;
         break;
@@ -138,10 +158,15 @@ int main(int argc, char* argv[]) {
         cout << "   -f overwrite output files / directories, deletes target files before writing" << endl << endl;
         cout << " arguments for specific tasks:" << endl;
         cout << "   calibrate:" << endl;
-        cout << "     -e <filename> e1,e2,..." << endl;
+        cout << "     -i <filename> e1,e2,..." << endl;
         cout << "        input file name with pixel data and peaks that are expected at energy e1, e2 etc (in keV)" << endl;
         cout << "     -o <directory>" << endl;
         cout << "        directory with output files" << endl;
+    }
+
+    for (auto cfg : calibrationInputFiles) { // close all potential input files
+        cfg.file->close();
+        delete cfg.file;
     }
 
     return 0;
