@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
     bool forceOverwrite = false;
     vector<calibrationInputFile> calibrationInputFiles;
     string outputDirectory;
+    calibrationParameter defaultCalibrationParameter;
 
     bool fail = false;
 
@@ -67,41 +68,42 @@ int main(int argc, char* argv[]) {
                     todo = taskNameMap.at(argv[argPos]);
                 }
                 break;
-            case 'c':
+            case 'c': {
                 argPos++;
                 if (string(argv[argPos]) == "tot") {
                     argPos++;
-                    thisColMapping.tot = std::stoi(argv[argPos]);
+                    thisColMapping.tot = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "toa") {
                     argPos++;
-                    thisColMapping.toa = std::stoi(argv[argPos]);
+                    thisColMapping.toa = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "ftoa") {
                     argPos++;
-                    thisColMapping.ftoa = std::stoi(argv[argPos]);
+                    thisColMapping.ftoa = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "matIdx") {
                     argPos++;
-                    thisColMapping.matIdx = std::stoi(argv[argPos]);
+                    thisColMapping.matIdx = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "overflow") {
                     argPos++;
-                    thisColMapping.overflow = std::stoi(argv[argPos]);
+                    thisColMapping.overflow = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "matIdx_x") {
                     argPos++;
-                    thisColMapping.matIdx_x = std::stoi(argv[argPos]);
+                    thisColMapping.matIdx_x = std::stoi(argv[argPos])-1;
                 } else if (string(argv[argPos]) == "matIdx_y") {
                     argPos++;
-                    thisColMapping.matIdx_y = std::stoi(argv[argPos]);
+                    thisColMapping.matIdx_y = std::stoi(argv[argPos])-1;
                 } else {
                     cout << "cannot recognize column type";
                     fail = true;
                 }
                 break;
+            }
             case 'f':
                 forceOverwrite = true;
                 break;
             case 'i': {
                 argPos++;
                 calibrationInputFile tmpCfg;
-                tmpCfg.file = new ifstream(argv[argPos]);
+                tmpCfg.filename = argv[argPos];
                 argPos++;
 
                 auto energyStrs = split(argv[argPos], ',');
@@ -114,9 +116,21 @@ int main(int argc, char* argv[]) {
                 break;
             }
             case 'o':
-                argPos ++;
+                argPos++;
                 outputDirectory = argv[argPos];
                 break;
+            case 'k': {
+                argPos++;
+
+                auto paramStrs = split(argv[argPos], ',');
+
+                defaultCalibrationParameter.a = std::stod(paramStrs[0]);
+                defaultCalibrationParameter.b = std::stod(paramStrs[1]);
+                defaultCalibrationParameter.c = std::stod(paramStrs[2]);
+                defaultCalibrationParameter.t = std::stod(paramStrs[3]);
+
+                break;
+            }
             default:
                 cout << "unexpected flag in argument number " << argPos << endl;
                 fail = true;
@@ -135,7 +149,21 @@ int main(int argc, char* argv[]) {
     switch (todo) {
     case CALIBRATE:{
         cout << "doing calibration" << endl;
-        int retVal = calibrate_tpx3(thisColMapping, calibrationInputFiles, outputDirectory);
+
+        fs::path data_dir(outputDirectory);
+
+        if (fs::exists(data_dir)) {
+            if (forceOverwrite) {
+                fs::remove_all(data_dir);
+            } else {
+                cout << "output directory already exists!" << endl;
+                return 1;
+            }
+        }
+
+        fs::create_directories(data_dir);
+
+        int retVal = calibrate_tpx3(thisColMapping, calibrationInputFiles, outputDirectory, defaultCalibrationParameter);
         cout << "finished with status " << retVal << endl;
         break;
     }
@@ -162,11 +190,8 @@ int main(int argc, char* argv[]) {
         cout << "        input file name with pixel data and peaks that are expected at energy e1, e2 etc (in keV)" << endl;
         cout << "     -o <directory>" << endl;
         cout << "        directory with output files" << endl;
-    }
-
-    for (auto cfg : calibrationInputFiles) { // close all potential input files
-        cfg.file->close();
-        delete cfg.file;
+        cout << "     -k <A>,<B>,<C>,<T>" << endl;
+        cout << "        initial coefficients" << endl << endl;
     }
 
     return 0;

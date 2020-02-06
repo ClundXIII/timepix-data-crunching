@@ -33,7 +33,7 @@ struct gaussParameter { // ampl * exp( (x-mean)^2 / (2*sigma^2)) + a*x + t
 };
 
 struct calibrationInputFile {
-    std::ifstream *file;
+    std::string filename;
     std::vector<double> energies;
 };
 

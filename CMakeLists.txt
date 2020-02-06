@@ -39,8 +39,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread ")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage")
 
 set(HEADERS
+    ${PROJECT_SOURCE_DIR}/src/tasks.hh
     ${PROJECT_SOURCE_DIR}/src/include.hh
     ${PROJECT_SOURCE_DIR}/src/util/split.hh
+    ${PROJECT_SOURCE_DIR}/src/util/transform.hh
+    ${PROJECT_SOURCE_DIR}/src/util/tot_keV_conversion.hh
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.hh
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
@@ -53,6 +56,11 @@ set(SOURCES
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
 
+find_package(Boost REQUIRED COMPONENTS iostreams system filesystem )
+include_directories(${Boost_INCLUDE_DIRS})
+
 # add object files to be compiled
 add_executable(timepix-data-crunching ${SOURCES})
 target_link_libraries(timepix-data-crunching "stdc++fs")# "c++experimental")
+target_link_libraries(timepix-data-crunching ${Boost_LIBRARIES}) #${Boost_iostreams_LIBRARY} ${Boost_system_LIBRARY} ${Boost_filesystem_LIBRARY} )
+

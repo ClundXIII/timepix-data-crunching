@@ -7,7 +7,9 @@
 
 namespace PDC {
 
-int calibrate_tpx3(colMapping thisColMapping, std::vector<calibrationInputFile> inputFiles, std::string outputDir);
+int calibrate_tpx3(colMapping thisColMapping,
+        std::vector<calibrationInputFile> inputFiles, std::string outputDir,
+        calibrationParameter defaultCalibrationParameter);
 
 } /* namespace PDC */
 
