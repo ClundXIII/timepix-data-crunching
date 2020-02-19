@@ -24,7 +24,7 @@ struct calibrationParameter {
     double t =  2;
 };
 
-struct gaussParameter { // ampl * exp( (x-mean)^2 / (2*sigma^2)) + a*x + t
+struct gaussParameter { // ampl * exp( (x-mean)^2 / (2*sigma^2)) + t / (exp( (x-mean) / sigma ) + 1)
     double ampl;
     double mean;
     double sigma;

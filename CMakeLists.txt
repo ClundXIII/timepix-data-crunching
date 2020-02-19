@@ -21,16 +21,16 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c89 -fPIC")
 
 # add compiler flags to enable strict compilation in debug mode
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0 --coverage")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O3 ")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O2 ")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Wextra -pedantic")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wmissing-prototypes")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wstrict-prototypes")
 
 # add compiler flags to define C++ version
 # and to compile position independent code
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
@@ -53,14 +53,23 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/calibrate_tpx3.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/extract_pixet_abct.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/bin_toa_ftoa.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/get_ftoa_xy.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/get_binary_toa.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/get_count.cpp
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
 
 find_package(Boost REQUIRED COMPONENTS iostreams system filesystem )
 include_directories(${Boost_INCLUDE_DIRS})
 
+find_package(dlib REQUIRED)
+include_directories(${dlib_INCLUDE_DIRS})
+
 # add object files to be compiled
 add_executable(timepix-data-crunching ${SOURCES})
 target_link_libraries(timepix-data-crunching "stdc++fs")# "c++experimental")
 target_link_libraries(timepix-data-crunching ${Boost_LIBRARIES}) #${Boost_iostreams_LIBRARY} ${Boost_system_LIBRARY} ${Boost_filesystem_LIBRARY} )
+target_link_libraries(timepix-data-crunching dlib::dlib)
 
