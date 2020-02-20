@@ -44,6 +44,8 @@ set(HEADERS
     ${PROJECT_SOURCE_DIR}/src/util/split.hh
     ${PROJECT_SOURCE_DIR}/src/util/transform.hh
     ${PROJECT_SOURCE_DIR}/src/util/tot_keV_conversion.hh
+    ${PROJECT_SOURCE_DIR}/src/util/base64.hh
+    ${PROJECT_SOURCE_DIR}/src/util/fit_gauss.hh
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.hh
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
@@ -58,6 +60,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/tasks/get_ftoa_xy.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/get_binary_toa.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/get_count.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/apply_simple_calibration.cpp
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
 

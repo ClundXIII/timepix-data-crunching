@@ -65,6 +65,8 @@ int main(int argc, char* argv[]) {
     bool maskToA = false;
     bool volume = false;
     bool calVolume = false;
+    float binwidth = 1;
+    bool includePixelIndex = false;
 
     bool fail = false;
 
@@ -184,6 +186,13 @@ int main(int argc, char* argv[]) {
             case 'V':
                 volume = true;
                 break;
+            case 'b':
+                argPos++;
+                binwidth = stod(argv[argPos]);
+                break;
+            case 'I':
+                includePixelIndex = true;
+                break;
             default:
                 cout << "unexpected flag in argument number " << argPos << endl;
                 fail = true;
@@ -220,17 +229,23 @@ int main(int argc, char* argv[]) {
         cout << "finished with status " << retVal << endl;
         break;
     }
-    case EXTRACT_PIXET_ABCT:
+    case EXTRACT_PIXET_ABCT: {
         cout << "extracting pixet a,b,c,t parameter" << endl;
-        int retVal = extract_pixet_abct(input, output, forceOverwrite);
+        int retVal = extract_pixet_abct(input, output, forceOverwrite, includePixelIndex);
         cout << "finished with status " << retVal << endl;
         break;
+    }
     case APPLY_CALIBRATION:
         cout << "applying calibration" << endl;
         break;
-    case APPLY_SIMPLE_CALIBRATION:
+    case APPLY_SIMPLE_CALIBRATION: {
         cout << "applying simple calibration" << endl;
+        int retVal = apply_simple_calibration(thisColMapping, input, output,
+                defaultCalibrationParameter, forceOverwrite, zero, range,
+                binwidth);
+        cout << "finished with status " << retVal << endl;
         break;
+    }
     case CLUSTER:
         cout << "doing clustering" << endl;
         break;
@@ -279,11 +294,25 @@ int main(int argc, char* argv[]) {
         cout << "        directory with output files" << endl;
         cout << "     -k <A>,<B>,<C>,<T>" << endl;
         cout << "        initial coefficients" << endl;
+        cout << "   apply_simple_calibration:" << endl;
+        cout << "     -i <filename>" << endl;
+        cout << "        input file name with pixel data" << endl;
+        cout << "     -o <filename>" << endl;
+        cout << "        output filename (histogram)" << endl;
+        cout << "     -k <A>,<B>,<C>,<T>" << endl;
+        cout << "        coefficients" << endl;
+        cout << "     -0 <energy>" << endl;
+        cout << "        minimal Energy (in integer keV, defaults to 0)" << endl;
+        cout << "     -r <energy>" << endl;
+        cout << "        histogram width (range will be from 0 to 0+r) (in integer keV, defaults to 100keV)" << endl;
+        cout << "     -b <energy>" << endl;
+        cout << "        histogram bin width (float in keV, defalts to 1)" << endl;
         cout << "   extract_pixet_abct:" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input .xml file" << endl;
         cout << "     -o <filename>" << endl;
-        cout << "        base output file name; result will be in <filename>.a etc" << endl;
+        cout << "        base output file name; result will be in columns" << endl;
+        cout << "     -I include pixel index" << endl;
         cout << "   get_binary_toa" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input file name with pixel data" << endl;

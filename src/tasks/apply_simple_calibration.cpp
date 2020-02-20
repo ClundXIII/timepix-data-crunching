@@ -11,8 +11,13 @@ namespace fs = std::experimental::filesystem;
 
 using namespace PDC;
 
-int apply_simple_calibration(colMapping thisColMapping, std::string input,
-        std::string output, calibrationParameter, bool forceOverwrite) {
+int PDC::apply_simple_calibration(colMapping thisColMapping, std::string input,
+        std::string output, calibrationParameter defaultCalibrationParameter,
+        bool forceOverwrite, long zero, long range, float binwidth) {
+
+    if (range == 0) {
+        range = 100;
+    }
 
     std::ifstream file(input);
 
@@ -21,9 +26,11 @@ int apply_simple_calibration(colMapping thisColMapping, std::string input,
         return 1;
     }
 
-    std::ofstream binOut(output, std::ofstream::out | std::ofstream::trunc);
-
     int crash_count = 0;
+
+    int binCount = ((float) range) / binwidth;
+
+    std::vector<int> energyBins(binCount, 0);
 
     while (!file.eof() && crash_count < 5) {
         std::string line;
@@ -31,17 +38,27 @@ int apply_simple_calibration(colMapping thisColMapping, std::string input,
 
         auto row = split(split(split(split(line, ';'), ','), '\t'), ' ');
 
-        long ToA = -1;
+        long ToT = -1;
 
         try {
-            ToA    = std::stol(row.at(thisColMapping.toa));
+            ToT = std::stol(row.at(thisColMapping.tot));
         } catch(...) {
             std::cout << "skipping line \"" <<  line << "\"" << std::endl;
             crash_count ++;
             continue;
         }
 
-        binOut << std::endl;
+        float energy = totTokeV(ToT, defaultCalibrationParameter);
+        int binPos = ((energy+binwidth/2.f)/binwidth)-zero;
+        if (binPos >= 0 && binPos < binCount) {
+            energyBins.at(binPos) ++;
+        }
+    }
+
+    std::ofstream binOut(output, std::ofstream::out | std::ofstream::trunc);
+
+    for (int i=0; i<binCount; i++) {
+        binOut << (zero + i*binwidth) << " " << energyBins.at(i) << std::endl;
     }
 
     binOut.close();

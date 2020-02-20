@@ -15,9 +15,10 @@ int calibrate_tpx3(colMapping thisColMapping,
 
 int apply_simple_calibration(colMapping thisColMapping, std::string input,
         std::string output, calibrationParameter defaultCalibrationParameter,
-        bool forceOverwrite);
+        bool forceOverwrite, long zero, long range, float binwidth);
 
-int extract_pixet_abct(std::string input, std::string output, bool forceOverwrite);
+int extract_pixet_abct(std::string input, std::string output,
+        bool forceOverwrite, bool includePixelIndex);
 
 int bin_toa_ftoa(colMapping thisColMapping, std::string input,
         std::string output, long zero, long range, bool maskToA);
@@ -29,7 +30,8 @@ int get_binary_toa(colMapping thisColMapping, std::string input,
         std::string output);
 
 int get_count(colMapping thisColMapping, std::string input, long zero,
-        long range, bool maskToA, int totCut, bool volume, calibrationParameter params, bool calVolume);
+        long range, bool maskToA, int totCut, bool volume,
+        calibrationParameter params, bool calVolume);
 
 } /* namespace PDC */
 
