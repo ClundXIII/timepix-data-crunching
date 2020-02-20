@@ -56,6 +56,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/classes/pixelhit.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/calibrate_tpx3.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/extract_pixet_abct.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/apply_calibration.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/bin_toa_ftoa.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/get_ftoa_xy.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/get_binary_toa.cpp

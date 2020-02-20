@@ -20,6 +20,10 @@ int apply_simple_calibration(colMapping thisColMapping, std::string input,
 int extract_pixet_abct(std::string input, std::string output,
         bool forceOverwrite, bool includePixelIndex);
 
+int apply_calibration(colMapping thisColMapping, std::string input,
+        std::string output, std::string calibrationFileName, bool forceOverwrite,
+        bool maskToA);
+
 int bin_toa_ftoa(colMapping thisColMapping, std::string input,
         std::string output, long zero, long range, bool maskToA);
 

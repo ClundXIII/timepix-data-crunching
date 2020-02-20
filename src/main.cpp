@@ -67,6 +67,7 @@ int main(int argc, char* argv[]) {
     bool calVolume = false;
     float binwidth = 1;
     bool includePixelIndex = false;
+    std::string calibrationFile;
 
     bool fail = false;
 
@@ -144,7 +145,7 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 default:
-                    cout << "no task yet given, treat -i as single input file string" << endl;
+                    cout << "task is not calibrate, treating -i as single input file string" << endl;
                 case TIME_BIN: {
                     input = argv[argPos];
                 }
@@ -158,14 +159,19 @@ int main(int argc, char* argv[]) {
             case 'k': {
                 argPos++;
 
-                auto paramStrs = split(argv[argPos], ',');
+                if (todo != APPLY_CALIBRATION) {
+                    std::cout << "task is not energy calibration, treating -k as list of abct parameters." << std::endl;
+                    auto paramStrs = split(argv[argPos], ',');
 
-                defaultCalibrationParameter.a = std::stod(paramStrs[0]);
-                defaultCalibrationParameter.b = std::stod(paramStrs[1]);
-                defaultCalibrationParameter.c = std::stod(paramStrs[2]);
-                defaultCalibrationParameter.t = std::stod(paramStrs[3]);
+                    defaultCalibrationParameter.a = std::stod(paramStrs[0]);
+                    defaultCalibrationParameter.b = std::stod(paramStrs[1]);
+                    defaultCalibrationParameter.c = std::stod(paramStrs[2]);
+                    defaultCalibrationParameter.t = std::stod(paramStrs[3]);
 
-                calVolume = true;
+                    calVolume = true;
+                } else {
+                    calibrationFile = argv[argPos];
+                }
                 break;
             }
             case '0':
@@ -235,9 +241,13 @@ int main(int argc, char* argv[]) {
         cout << "finished with status " << retVal << endl;
         break;
     }
-    case APPLY_CALIBRATION:
+    case APPLY_CALIBRATION: {
         cout << "applying calibration" << endl;
+        int retVal = apply_calibration(thisColMapping, input, output,
+                calibrationFile, forceOverwrite, maskToA);
+        cout << "finished with status " << retVal << endl;
         break;
+    }
     case APPLY_SIMPLE_CALIBRATION: {
         cout << "applying simple calibration" << endl;
         int retVal = apply_simple_calibration(thisColMapping, input, output,
@@ -294,7 +304,7 @@ int main(int argc, char* argv[]) {
         cout << "        directory with output files" << endl;
         cout << "     -k <A>,<B>,<C>,<T>" << endl;
         cout << "        initial coefficients" << endl;
-        cout << "   apply_simple_calibration:" << endl;
+        cout << "   apply_simple_calibration: produces histogram" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input file name with pixel data" << endl;
         cout << "     -o <filename>" << endl;
@@ -313,6 +323,13 @@ int main(int argc, char* argv[]) {
         cout << "     -o <filename>" << endl;
         cout << "        base output file name; result will be in columns" << endl;
         cout << "     -I include pixel index" << endl;
+        cout << "   apply_calibration: outputs all specified columns" << endl;
+        cout << "     -i <filename>" << endl;
+        cout << "        input pixel file" << endl;
+        cout << "     -o <filename>" << endl;
+        cout << "        output file name" << endl;
+        cout << "     -k <filename>" << endl;
+        cout << "        calibration file name" << endl;
         cout << "   get_binary_toa" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input file name with pixel data" << endl;
