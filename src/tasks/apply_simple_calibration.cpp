@@ -49,7 +49,7 @@ int PDC::apply_simple_calibration(colMapping thisColMapping, std::string input,
         }
 
         float energy = totTokeV(ToT, defaultCalibrationParameter);
-        int binPos = ((energy+binwidth/2.f)/binwidth)-zero;
+        int binPos = ((energy+binwidth-zero)/binwidth);
         if (binPos >= 0 && binPos < binCount) {
             energyBins.at(binPos) ++;
         }
@@ -58,7 +58,7 @@ int PDC::apply_simple_calibration(colMapping thisColMapping, std::string input,
     std::ofstream binOut(output, std::ofstream::out | std::ofstream::trunc);
 
     for (int i=0; i<binCount; i++) {
-        binOut << (zero + i*binwidth) << " " << energyBins.at(i) << std::endl;
+        binOut << (zero + i*binwidth+binwidth/2) << " " << energyBins.at(i) << std::endl;
     }
 
     binOut.close();

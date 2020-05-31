@@ -15,6 +15,8 @@ struct colMapping {
     int overflow = -1;
     int matIdx_x = -1;
     int matIdx_y = -1;
+    int calEnergy = -1;
+    int time = -1; // ftao + toa
 };
 
 struct calibrationParameter {

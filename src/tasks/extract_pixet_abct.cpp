@@ -9,6 +9,8 @@
 #include <iostream>
 #include <experimental/filesystem>
 
+namespace fs = std::experimental::filesystem;
+
 using namespace PDC;
 
 const long toa_clck = 40;
@@ -18,6 +20,11 @@ const long clck_ratio = ftoa_clck / toa_clck;
 
 int PDC::extract_pixet_abct(std::string input, std::string output,
         bool forceOverwrite, bool includePixelIndex) {
+
+    if (!forceOverwrite && fs::exists(output)) {
+        std::cout << "Output file already exists, use -f to force overwrite." << std::endl;
+        return 1;
+    }
 
     std::vector<double> a(256*256, 0);
     std::vector<double> b(256*256, 0);

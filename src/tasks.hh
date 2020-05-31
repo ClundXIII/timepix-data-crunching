@@ -24,6 +24,10 @@ int apply_calibration(colMapping thisColMapping, std::string input,
         std::string output, std::string calibrationFileName, bool forceOverwrite,
         bool maskToA);
 
+int bin_scale_data(colMapping thisColMapping, std::string input,
+        std::string output, bool forceOverwrite, std::string efficiencyFile,
+        long zero, long range, float binwidth);
+
 int bin_toa_ftoa(colMapping thisColMapping, std::string input,
         std::string output, long zero, long range, bool maskToA);
 

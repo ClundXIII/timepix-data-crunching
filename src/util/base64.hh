@@ -88,7 +88,7 @@ inline unsigned char* base64_decode(const char *data, size_t input_length, size_
 
     return decoded_data;
 
-};
+}
 
 } /* namespace PDC */
 

@@ -62,6 +62,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/tasks/get_binary_toa.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/get_count.cpp
     ${PROJECT_SOURCE_DIR}/src/tasks/apply_simple_calibration.cpp
+    ${PROJECT_SOURCE_DIR}/src/tasks/bin_scale_data.cpp
     #${PROJECT_SOURCE_DIR}/src/classes/
 )
 

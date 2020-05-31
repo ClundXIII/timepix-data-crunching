@@ -20,6 +20,7 @@ enum task {
     EXTRACT_PIXET_ABCT,
     APPLY_SIMPLE_CALIBRATION,
     APPLY_CALIBRATION,
+    BIN_SCALE_DATA,
     CLUSTER,
     TIME_BIN,
     GET_FTOA_XY,
@@ -32,6 +33,7 @@ map<string, task> taskNameMap = {
     { "extract_pixet_abct", EXTRACT_PIXET_ABCT},
     { "apply_simple_calibration", APPLY_SIMPLE_CALIBRATION },
     { "apply_calibration", APPLY_CALIBRATION },
+    { "bin_scale_data", BIN_SCALE_DATA },
     { "cluster", CLUSTER },
     { "time_bin", TIME_BIN },
     { "get_ftoa_xy", GET_FTOA_XY },
@@ -67,7 +69,10 @@ int main(int argc, char* argv[]) {
     bool calVolume = false;
     float binwidth = 1;
     bool includePixelIndex = false;
-    std::string calibrationFile;
+    string calibrationFile;
+    string efficiencyFile = "";
+    int inputFileRangeStart = -1;
+    int inputFileRangeLength = -1;
 
     bool fail = false;
 
@@ -117,6 +122,12 @@ int main(int argc, char* argv[]) {
                 } else if (string(argv[argPos]) == "matIdx_y") {
                     argPos++;
                     thisColMapping.matIdx_y = std::stoi(argv[argPos])-1;
+                } else if (string(argv[argPos]) == "calEnergy") {
+                    argPos++;
+                    thisColMapping.calEnergy = std::stoi(argv[argPos])-1;
+                } else if (string(argv[argPos]) == "time") {
+                    argPos++;
+                    thisColMapping.time = std::stoi(argv[argPos])-1;
                 } else {
                     cout << "cannot recognize column type";
                     fail = true;
@@ -199,6 +210,16 @@ int main(int argc, char* argv[]) {
             case 'I':
                 includePixelIndex = true;
                 break;
+            case 'e':
+                argPos++;
+                efficiencyFile = argv[argPos];
+                break;
+            case 'R':
+                argPos++;
+                inputFileRangeStart = stol(argv[argPos]);
+                argPos++;
+                inputFileRangeLength = stol(argv[argPos]);
+                break;
             default:
                 cout << "unexpected flag in argument number " << argPos << endl;
                 fail = true;
@@ -231,7 +252,8 @@ int main(int argc, char* argv[]) {
 
         fs::create_directories(data_dir);
 
-        int retVal = calibrate_tpx3(thisColMapping, calibrationInputFiles, output, defaultCalibrationParameter);
+        int retVal = calibrate_tpx3(thisColMapping, calibrationInputFiles,
+                output, defaultCalibrationParameter);
         cout << "finished with status " << retVal << endl;
         break;
     }
@@ -245,6 +267,13 @@ int main(int argc, char* argv[]) {
         cout << "applying calibration" << endl;
         int retVal = apply_calibration(thisColMapping, input, output,
                 calibrationFile, forceOverwrite, maskToA);
+        cout << "finished with status " << retVal << endl;
+        break;
+    }
+    case BIN_SCALE_DATA: {
+        cout << "applying bin_scale_data" << endl;
+        int retVal = bin_scale_data(thisColMapping, input, output,
+                forceOverwrite, efficiencyFile, zero, range, binwidth);
         cout << "finished with status " << retVal << endl;
         break;
     }
@@ -292,7 +321,7 @@ int main(int argc, char* argv[]) {
         cout << "      specifies what detector is assumed" << endl;
         cout << "   -t [ calibrate | apply_calibration | cluster | time_bin | get_binary_toa | get_ftoa_xy | get_count ]" << endl;
         cout << "      specifies what task is being executed" << endl;
-        cout << "   -c [ tot | toa | ftoa | matIdx | overflow | matIdx_x | matIdx_y] <number>" << endl;
+        cout << "   -c [ tot | toa | ftoa | matIdx | overflow | matIdx_x | matIdx_y | calEnergy] <number>" << endl;
         cout << "      specifies the column of the parameter for input files, counting starts at 1" << endl;
         cout << "   -f overwrite output files / directories, deletes target files before writing" << endl;
         cout << "   -m mask toa, use only lowest 14 bits. Useful for high-intensity bursts and cheaper readouts" << endl << endl;
@@ -330,6 +359,15 @@ int main(int argc, char* argv[]) {
         cout << "        output file name" << endl;
         cout << "     -k <filename>" << endl;
         cout << "        calibration file name" << endl;
+        cout << "   bin_scale_data: bin data to histogram and" << endl;
+        cout << "        scale with additional efficiency data" << endl;
+        cout << "     -i <filename>" << endl;
+        cout << "        input pixel file" << endl;
+        cout << "     -o <filename>" << endl;
+        cout << "        output file name, histogram" << endl;
+        cout << "     -e <filename>" << endl;
+        cout << "        file containing the detector efficiency per energy" << endl;
+        cout << "        if set, additional column will appear" << endl;
         cout << "   get_binary_toa" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input file name with pixel data" << endl;
