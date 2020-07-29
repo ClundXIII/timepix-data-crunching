@@ -19,6 +19,7 @@ enum task {
     CALIBRATE,
     EXTRACT_PIXET_ABCT,
     APPLY_SIMPLE_CALIBRATION,
+    APPLY_DECALIBRATION,
     APPLY_CALIBRATION,
     BIN_SCALE_DATA,
     CLUSTER,
@@ -32,6 +33,7 @@ map<string, task> taskNameMap = {
     { "calibrate", CALIBRATE },
     { "extract_pixet_abct", EXTRACT_PIXET_ABCT},
     { "apply_simple_calibration", APPLY_SIMPLE_CALIBRATION },
+    { "apply_decalibration", APPLY_DECALIBRATION },
     { "apply_calibration", APPLY_CALIBRATION },
     { "bin_scale_data", BIN_SCALE_DATA },
     { "cluster", CLUSTER },
@@ -71,8 +73,8 @@ int main(int argc, char* argv[]) {
     bool includePixelIndex = false;
     string calibrationFile;
     string efficiencyFile = "";
-    int inputFileRangeStart = -1;
-    int inputFileRangeLength = -1;
+    /* int inputFileRangeStart = -1;
+    int inputFileRangeLength = -1;*/
 
     bool fail = false;
 
@@ -214,12 +216,12 @@ int main(int argc, char* argv[]) {
                 argPos++;
                 efficiencyFile = argv[argPos];
                 break;
-            case 'R':
+            /*case 'R':
                 argPos++;
                 inputFileRangeStart = stol(argv[argPos]);
                 argPos++;
                 inputFileRangeLength = stol(argv[argPos]);
-                break;
+                break;*/
             default:
                 cout << "unexpected flag in argument number " << argPos << endl;
                 fail = true;
@@ -267,6 +269,14 @@ int main(int argc, char* argv[]) {
         cout << "applying calibration" << endl;
         int retVal = apply_calibration(thisColMapping, input, output,
                 calibrationFile, forceOverwrite, maskToA);
+        cout << "finished with status " << retVal << endl;
+        break;
+    }
+    case APPLY_DECALIBRATION: {
+        cout << "applying decalibration" << endl;
+        int retVal = apply_decalibration(thisColMapping, input, output,
+                defaultCalibrationParameter, forceOverwrite, zero, range,
+                binwidth);
         cout << "finished with status " << retVal << endl;
         break;
     }
@@ -338,6 +348,19 @@ int main(int argc, char* argv[]) {
         cout << "        input file name with pixel data" << endl;
         cout << "     -o <filename>" << endl;
         cout << "        output filename (histogram)" << endl;
+        cout << "     -k <A>,<B>,<C>,<T>" << endl;
+        cout << "        coefficients" << endl;
+        cout << "     -0 <energy>" << endl;
+        cout << "        minimal Energy (in integer keV, defaults to 0)" << endl;
+        cout << "     -r <energy>" << endl;
+        cout << "        histogram width (range will be from 0 to 0+r) (in integer keV, defaults to 100keV)" << endl;
+        cout << "     -b <energy>" << endl;
+        cout << "        histogram bin width (float in keV, defalts to 1)" << endl;
+        cout << "   apply_decalibration: produces histogram" << endl;
+        cout << "     -i <filename>" << endl;
+        cout << "        input file name with energy data" << endl;
+        cout << "     -o <filename>" << endl;
+        cout << "        output filename (histogram, in tot)" << endl;
         cout << "     -k <A>,<B>,<C>,<T>" << endl;
         cout << "        coefficients" << endl;
         cout << "     -0 <energy>" << endl;

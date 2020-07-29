@@ -17,6 +17,10 @@ int apply_simple_calibration(colMapping thisColMapping, std::string input,
         std::string output, calibrationParameter defaultCalibrationParameter,
         bool forceOverwrite, long zero, long range, float binwidth);
 
+int apply_decalibration(colMapping thisColMapping, std::string input,
+        std::string output, calibrationParameter defaultCalibrationParameter,
+        bool forceOverwrite, float zero, float range, float binwidth);
+
 int extract_pixet_abct(std::string input, std::string output,
         bool forceOverwrite, bool includePixelIndex);
 

@@ -87,7 +87,7 @@ int PDC::bin_scale_data(colMapping thisColMapping, std::string input,
 
     crash_count = 0;
 
-    while (!inputF.eof() && crash_count < 5) {
+    while (!inputF.eof() && crash_count < 20) {
         std::string line;
         std::getline(inputF, line);
 
