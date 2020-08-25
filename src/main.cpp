@@ -329,20 +329,20 @@ int main(int argc, char* argv[]) {
         cout << " supported general arguments:" << endl;
         cout << "   -d tpx3" << endl;
         cout << "      specifies what detector is assumed" << endl;
-        cout << "   -t [ calibrate | apply_calibration | cluster | time_bin | get_binary_toa | get_ftoa_xy | get_count ]" << endl;
+        cout << "   -t [ apply_calibration | cluster | time_bin | get_binary_toa | get_ftoa_xy | get_count ]" << endl;
         cout << "      specifies what task is being executed" << endl;
         cout << "   -c [ tot | toa | ftoa | matIdx | overflow | matIdx_x | matIdx_y | calEnergy] <number>" << endl;
         cout << "      specifies the column of the parameter for input files, counting starts at 1" << endl;
         cout << "   -f overwrite output files / directories, deletes target files before writing" << endl;
         cout << "   -m mask toa, use only lowest 14 bits. Useful for high-intensity bursts and cheaper readouts" << endl << endl;
         cout << " arguments for specific tasks:" << endl;
-        cout << "   calibrate:" << endl;
+        /*cout << "   calibrate:" << endl;
         cout << "     -i <filename> e1,e2,..." << endl;
         cout << "        input file name with pixel data and peaks that are expected at energy e1, e2 etc (in keV)" << endl;
         cout << "     -o <directory>" << endl;
         cout << "        directory with output files" << endl;
         cout << "     -k <A>,<B>,<C>,<T>" << endl;
-        cout << "        initial coefficients" << endl;
+        cout << "        initial coefficients" << endl;*/
         cout << "   apply_simple_calibration: produces histogram" << endl;
         cout << "     -i <filename>" << endl;
         cout << "        input file name with pixel data" << endl;
